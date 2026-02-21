@@ -36,6 +36,7 @@ git clone https://github.com/YOUR_USERNAME/claude-rtl.git
 
 ```
 claude-rtl/
+├── .gitignore
 ├── manifest.json      # Extension config
 ├── content.js         # Injects RTL styles into the page
 ├── popup.html         # Popup UI
