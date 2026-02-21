@@ -1,0 +1,47 @@
+name: Validate Extension
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  validate-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate manifest.json exists
+        run: test -f manifest.json
+
+      - name: Validate manifest.json is valid JSON
+        run: python3 -c "import json,sys; json.load(open('manifest.json'))"
+
+      - name: Validate manifest version is 3
+        run: |
+          VERSION=$(python3 -c "import json; print(json.load(open('manifest.json'))['manifest_version'])")
+          test "$VERSION" = "3"
+
+      - name: Validate required fields exist
+        run: |
+          python3 -c "
+          import json, sys
+          m = json.load(open('manifest.json'))
+          required = ['manifest_version', 'name', 'version', 'description']
+          missing = [f for f in required if f not in m]
+          if missing:
+              print('Missing fields:', missing)
+              sys.exit(1)
+          print('All required fields present')
+          "
+
+      - name: Validate icon files exist
+        run: |
+          test -f src/icons/icon16.png
+          test -f src/icons/icon32.png
+          test -f src/icons/icon48.png
+          test -f src/icons/icon128.png
+
+      - name: Validate content script file exists
+        run: test -f src/content.js
