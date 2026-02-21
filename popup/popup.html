@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-dim: #7a6530;
+            --bg-deep: #0d0b12;
+            --bg-elevated: #1a1628;
+            --text-primary: #f0ead6;
+            --text-muted: #6a6080;
+            --border: rgba(201,168,76,0.18);
+        }
+
+        html, body {
+            width: 280px;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-deep);
+            overflow: hidden;
+        }
+
+        body {
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+            position: relative;
+            direction: rtl;
+        }
+
+        .glow-top {
+            position: absolute; top: -60px; right: -60px;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .glow-bottom {
+            position: absolute; bottom: -50px; left: -50px;
+            width: 160px; height: 160px;
+            background: radial-gradient(circle, rgba(100,60,200,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .bracket { position: absolute; width: 14px; height: 14px; z-index: 5; pointer-events: none; }
+        .bracket.tl { top: 10px; right: 10px; border-top: 1px solid var(--gold-dim); border-right: 1px solid var(--gold-dim); }
+        .bracket.br { bottom: 10px; left: 10px; border-bottom: 1px solid var(--gold-dim); border-left: 1px solid var(--gold-dim); }
+
+        .container {
+            position: relative; z-index: 1;
+            padding: 22px 20px 20px;
+            display: flex; flex-direction: column;
+        }
+
+        .header {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; margin-bottom: 18px;
+        }
+        .brand-name { font-size: 17px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.2; }
+        .brand-name em { color: var(--gold); font-style: normal; }
+        .brand-sub { font-size: 8.5px; color: var(--text-muted); letter-spacing: 0.12em; margin-top: 3px; }
+        .version {
+            font-size: 9px; color: var(--gold-dim);
+            background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.14);
+            border-radius: 20px; padding: 3px 9px; white-space: nowrap; flex-shrink: 0;
+        }
+
+        .divider { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+        .divider-line { flex: 1; height: 1px; background: var(--border); }
+        .divider-gem { font-size: 6px; color: var(--gold-dim); }
+
+        .card {
+            background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px;
+            padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03);
+            transition: border-color 0.3s; margin-bottom: 14px;
+        }
+        .card:hover { border-color: rgba(201,168,76,0.32); }
+        .card-info { flex: 1; min-width: 0; }
+        .card-label { font-size: 13px; font-weight: 500; }
+        .card-desc { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+        .switch { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+        .switch input { display: none; }
+        .slider {
+            position: absolute; inset: 0;
+            background: #1c1830; border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 26px; cursor: pointer; transition: all 0.3s;
+        }
+        .slider::before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            left: 4px; top: 3px;
+            background: #3a3560; border-radius: 50%;
+            transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        input:checked + .slider { background: #2a1f08; border-color: rgba(201,168,76,0.45); box-shadow: 0 0 14px rgba(201,168,76,0.18); }
+        input:checked + .slider::before {
+            transform: translateX(22px);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            box-shadow: 0 2px 8px rgba(201,168,76,0.55);
+        }
+
+        .status-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 14px; border-radius: 20px; font-size: 11px;
+            border: 1px solid transparent; transition: all 0.3s;
+        }
+        .status-pill.on { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.22); color: var(--gold-light); }
+        .status-pill.off { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); color: var(--text-muted); }
+        .dot { width: 6px; height: 6px; border-radius: 50%; transition: all 0.3s; }
+        .status-pill.on .dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); animation: blink 2s infinite; }
+        .status-pill.off .dot { background: #2e2a45; }
+
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        .footer {
+            border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-site { font-size: 9px; color: #2e2a45; letter-spacing: 0.06em; }
+        .footer-hint { font-size: 9px; color: var(--gold-dim); opacity: 0.6; }
+
+        .container > * { animation: rise 0.35s ease both; }
+        .container > *:nth-child(1){animation-delay:0.04s}
+        .container > *:nth-child(2){animation-delay:0.10s}
+        .container > *:nth-child(3){animation-delay:0.16s}
+        .container > *:nth-child(4){animation-delay:0.21s}
+        .container > *:nth-child(5){animation-delay:0.26s}
+        @keyframes rise { from{opacity:0;transform:translateY(7px)} to{opacity:1;transform:translateY(0)} }
+    </style>
+</head>
+<body>
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
+<div class="bracket tl"></div>
+<div class="bracket br"></div>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="brand-name">Claude <em>RTL</em></div>
+            <div class="brand-sub">PERSIAN LAYOUT ENGINE</div>
+        </div>
+        <div class="version">v 1.1</div>
+    </div>
+
+    <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-gem">◆</div>
+        <div class="divider-line"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-info">
+            <div class="card-label">حالت راست به چپ</div>
+            <div class="card-desc">جهت متن و رابط کاربری</div>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="rtl-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="status-wrap">
+        <div class="status-pill off" id="status-pill">
+            <div class="dot"></div>
+            <span id="status-text">در حال بارگذاری...</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="footer-site">claude.ai</span>
+        <span class="footer-hint">راست‌چین فارسی</span>
+    </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
