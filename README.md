@@ -19,7 +19,7 @@ A Chrome extension that makes [claude.ai](https://claude.ai) right-to-left, buil
 1. Clone the repo:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-rtl.git
+git clone git@github.com:mh-daneshvar/claude-rtl.git
 ```
 
 2. Open Chrome and go to `chrome://extensions`
