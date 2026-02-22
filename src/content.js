@@ -13,9 +13,17 @@ function isContextValid() {
 function applyRTL() {
     if (document.getElementById(STYLE_ID)) return;
 
+    const fontURL = chrome.runtime.getURL('src/fonts/Vazirmatn-Regular.woff2');
+
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
+        @font-face {
+            font-family: 'Vazirmatn';
+            src: url('${fontURL}') format('woff2');
+            font-weight: normal;
+        }
+    
         [data-testid="user-message"],
         [data-testid="assistant-message"],
         .font-claude-message,
@@ -30,12 +38,14 @@ function applyRTL() {
         div[contenteditable="true"], textarea {
             direction: rtl !important;
             text-align: right !important;
+            font-family: 'Vazirmatn', Tahoma, sans-serif !important;
         }
 
         .code-block__code,
         .code-block__code * {
             direction: ltr !important;
             text-align: left !important;
+            font-family: monospace !important;
         }
 
         code.whitespace-pre-wrap {
@@ -43,6 +53,7 @@ function applyRTL() {
             text-align: left !important;
             unicode-bidi: embed !important;
             display: inline-block !important;
+            font-family: monospace !important;
         }
     `;
     document.head.appendChild(style);
