@@ -26,5 +26,9 @@
       "js": ["src/content.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "web_accessible_resources": [{
+    "resources": ["src/fonts/*.woff2"],
+    "matches": ["https://claude.ai/*"]
+  }]
 }
