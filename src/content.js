@@ -32,7 +32,7 @@ function applyRTL() {
         .whitespace-pre-wrap {
             direction: rtl !important;
             text-align: right !important;
-            font-family: Vazirmatn, Tahoma, sans-serif !important;
+            font-family: 'Vazirmatn', Tahoma, sans-serif !important;
         }
 
         div[contenteditable="true"], textarea {
